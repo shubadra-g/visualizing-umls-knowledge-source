@@ -83,14 +83,17 @@
           </div>
         </div>
 
-        <div class="col-sm-10" style="background-color: #F8F8F8">
-          <div class = "visual_window" id = "visual_window" >
-            <p>Atoms</p>
-              <div class = "concept_atoms"  style="height: 600px;">
-                <p id="atomVisHeader" ></p>
+        <div class="col-sm-10" style="background-color: #F8F8F8; width: 1500px;">
+          <div class = "visual_window" id = "visual_window" style="width: 1500px" >
+            <!-- <p>Atoms</p> -->
+              <!-- <div class = "concept_atoms"  style="height: 600px;"> -->
+                <!-- <p id="atomVisHeader" ></p> -->
+              <!-- </div> -->
+              <div class="breadcrumb" id="breadcrumb" style="height: 100px">
+                <!-- <p>Breadcrumb</p> -->
               </div>
               <div id = "tool_tip"></div>
-              <div class = "concept_relations" id= "map" style="height: 600px;">
+              <div class = "concept_relations" id= "map" style="height: 900px; width: 1500px;">
                 <p>Concept Relations</p>
               </div>
           </div>
@@ -129,5 +132,6 @@
    <script src="./src/js/app.js" type="text/javascript"></script>
    <script src="./src/js/atomView.js" type="text/javascript"></script>
    <script src="./src/js/conceptMap.js" type="text/javascript"></script>
+   <script src="./src/js/breadcrumbs.js" type="text/javascript"></script>
 </body>
 </html>

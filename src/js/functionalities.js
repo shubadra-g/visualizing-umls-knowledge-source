@@ -20,7 +20,8 @@ search_type = function(){
             // console.log(concept_cui);
             if (concept_cui != ""){
             search_relations_by_cui(concept_cui);
-            search_atoms_by_cui(concept_cui);}
+            // search_atoms_by_cui(concept_cui);
+            }
             else alert("Please enter your String or CUI")
 
         }

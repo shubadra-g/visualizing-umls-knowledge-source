@@ -1,8 +1,14 @@
-search_relations_by_cui = function(concept){
+var breadcrumbArray = [];
+var rootTerm = '';
+var childNodes = [];
+search_relations_by_cui = function(concept) {
     // d3.select(".visual_window").select("h1").remove();
     // header = d3.select(".visual_window").append("h1").text("Search Relations by String")
-    var height = 750;
-    var width = 1100;
+    var height = 950;
+    var width = 1500;
+    var b = {
+        w: 150, h:30, s: 3, t: 10
+    };
 
     d3.queue()
     .defer(d3.csv, "./data/concept_info.csv")
@@ -16,8 +22,8 @@ search_relations_by_cui = function(concept){
     d3.select(".concept_relations").selectAll(".concept_relations_box").remove();
     
     var svg = d3.select(".concept_relations").append("div").attr("class", "concept_relations_box")
-                .append("svg").attr("height",height).attr("width",width)
-                .attr("style", "outline: thin solid black;");
+                .append("svg").attr("height",height).attr("width",width);
+                // .attr("style", "outline: thin solid black;");
 
     svg.append("rect")
         .attr("class", "background")
@@ -26,9 +32,47 @@ search_relations_by_cui = function(concept){
         .attr("fill", "#F8F8F8")
         .on("click", reset);
 
+    var breadcrumb = d3.breadcrumb()
+                   .container('breadcrumb')
+                   .padding(5)
+                   .wrapWidth(0)
+
     var simulation = d3.forceSimulation()
-        .force("charge", d3.forceManyBody().strength(-1000))
-        .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(150))
+        .force("charge", d3.forceManyBody().strength(-1900))
+        .force("link", 
+            d3.forceLink()
+              .id(function(d) { 
+                    // console.log(d.id); 
+                    return d.id; })
+              .distance(function(d) {
+                    dID = d.target;
+                    // console.log(dID.id);
+                    // console.log(radius_dict['C0236100']);
+                    linkLen = radius_dict[dID.id.toString()];
+                    // console.log(linkLen);
+                    if (linkLen == 1) {
+                        return linkLen * 400;
+                    }
+                    if (linkLen < 5) {
+                        return linkLen * 130;
+                    }
+                    if (linkLen > 4 && linkLen < 10) {
+                        return linkLen * 130;
+                    }
+                    if (linkLen > 10 && linkLen < 35) {
+                        return linkLen * 10
+                    }
+                    if (linkLen > 35 && linkLen < 65) {
+                        return linkLen * 5
+                    }
+                    if (linkLen > 65) {
+                        return 100;
+                    }
+                    else { 
+                        return 150;
+                    }
+                    
+              }))
         .force("center_force", d3.forceCenter(width / 2, height / 2))
         // .force("x", d3.forceX(width / 2))
         // .force("y", d3.forceY(height / 2))
@@ -41,7 +85,9 @@ search_relations_by_cui = function(concept){
 
     var tooltip = d3.select("#tool_tip")
                     .append("div")
-                    .attr("class", "tooltip hidden");
+                    .attr("class", "tooltip hidden")
+                    
+                    ;
 
     var offsetL = document.getElementById('map').offsetLeft +210;
     var offsetT = document.getElementById('map').offsetTop + 180;
@@ -54,8 +100,9 @@ search_relations_by_cui = function(concept){
     var scaleRadius, scaleColor;
     var cDefn, level2Defn, strDefn;
     // var color = ['#deebf7','#c6dbef','#9ecae1','#6baed6','#4292c6','#2171b5','#08519c','#08306b']
+    // var color = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#08519c', '#08306b'];
     var color = ['#efedf5','#dadaeb','#bcbddc','#9e9ac8','#807dba','#6a51a3','#54278f','#3f007d']
-
+    
     function ready(error, concept_info, concept_defn, concept_reln, level2_info, level2_defn, level2_relations){
         if (error) return console.log(error);
     
@@ -65,7 +112,7 @@ search_relations_by_cui = function(concept){
         
         level2CRelation = d3.nest()
                     .key(function(d){return d.CUI1})
-                    .map(level2_relations, d3.map)
+                    .map(level2_relations, d3.map);
         
         level2CInfo = d3.nest()
                         .key(function(d){return d.CUI})
@@ -84,9 +131,10 @@ search_relations_by_cui = function(concept){
                         .map(level2_defn,d3.map);
 
         strDefn = Object.assign({},cDefn,level2Defn);
-
+        
         if (dataMap.has(concept))
         {   
+            console.log(concept);
             dataMap = dataMap.get(concept);
 
             dataDefnMap = d3.nest()
@@ -95,16 +143,21 @@ search_relations_by_cui = function(concept){
             
 
             dataMap.forEach(function(value) {
+                
+                // console.log(value.CUI2);
+
                 graph_node.push({'id':value.CUI2});
                 graph_link.push({'source':value.CUI1, 'target': value.CUI2,});
+                
             });
             //get_all_number_relations()
             restart(graph_node, graph_link);
         }
         else alert("No such String or CUI exists");
     }
-
+    
     var radius_dict = {}
+    console.log(radius_dict);
     function get_all_number_relations(){
         var arr = []
         arr.push(dataMap.length)
@@ -115,12 +168,17 @@ search_relations_by_cui = function(concept){
         });
         // console.log(Math.min.apply(null, arr))
         // console.log(Math.max.apply(null, arr))
+        
         return ([Math.min.apply(null, arr), Math.max.apply(null, arr)])
     }
 
     function get_relation_length(selectedNode){
-        if (selectedNode in radius_dict)
-        return radius_dict[selectedNode]
+        // console.log(selectedNode);
+        if (selectedNode in radius_dict) {
+            // console.log(radius_dict[selectedNode]);
+            return radius_dict[selectedNode]
+        }
+        
         else return 1;
     }
 
@@ -194,6 +252,7 @@ search_relations_by_cui = function(concept){
         return neighbors.indexOf(nod.id) != -1 ? 'green' : 'black'
     }
     
+    
     function update(graph_nodes, graph_links,selectedNode)
     {
         var gl = [], gn = [];
@@ -216,12 +275,60 @@ search_relations_by_cui = function(concept){
     //    console.log("Updation",updated_nodes.length, updated_links.length)
         return [updated_nodes, updated_links];
     }
+    
+    // function updateBreacrumb(nodeData) {
+    //     var trail = d3.select("#breadcrumb").append("svg")
+    //     .attr("width", 960)
+    //     .attr("height", 50)
+    //     .attr("id", "trail");
+    //     trail.append("text")
+    //     .append("text")
+    //     .attr("id", "endlabel")
+    //     .style("fill", "#c6dbef");
 
+    //     d3.select("#trail").style("visibility", "");
+
+    //     var breadcrumb = d3.breadcrumb()
+    //         .container('breadcrumb');
+            
+
+    //     breadcrumb = d3.breadcrumb()
+    //         .container('svg')   
+    //         .padding(5)
+    //         .wrapWidth(0)  // hint:  set 100 
+    //         .height(28)
+    //         .fontSize(14)
+    //         .marginLeft(0)
+    //         .marginTop(10)
+    //         .leftDirection(false)
+    //         ;
+    //     // show breadcrumbs
+    //     // breadcrumb.show([{text:conceptName},{fill:'#E8E8E8'}]);
+    //     console.log(nodeData);
+    //     conceptName = get_concept_name(nodeData);
+    //     console.log(breadcrumbArray);
+    //     breadcrumbArray.push(conceptName);
+    //     console.log(breadcrumbArray);
+    //     var i = 0;
+        
+    //     // console.log(breadcrumbArray);
+    //     // showBreadcrumb(breadcrumbArray[i]);
+    //     // breadcrumb.show([{text: conceptName}, {text:breadcrumbArray[0]}, {text: breadcrumbArray[i+1]}, {text: breadcrumbArray[i+2]}, {text: breadcrumbArray[i+3]}, {text: breadcrumbArray[i+4]}], {fill: 'white'});
+    //     breadcrumb.show([{text: rootTerm}, {text:breadcrumbArray[0]}, {text: breadcrumbArray[1]}, {fill: '#E9ECEF'}]);
+        
+        
+    //     // breadcrumb.show([{text:breadcrumbArray[i]},{fill:'#E8E8E8'}]);
+    //     // breadcrumb.show([{text:breadcrumbArray[i]},{fill:'#E8E8E8'}]);
+        
+    // }   
     function restart(graph_nodes, graph_links, selectedNode)
     {   
         updated = update(graph_nodes, graph_links,selectedNode)
         let updated_nodes = updated[0];
         let updated_links = updated[1];
+        // breadcrumbArray = [];
+        // initializeBreadcrumb(get_concept_name(selectNode));
+        // updateBreacrumb(selectNode);
 
         // console.log("Restarting", updated_nodes.length, updated_links.length);
         scaleRadius = d3.scaleLinear()
@@ -234,16 +341,41 @@ search_relations_by_cui = function(concept){
                     .attr("stroke","black").attr('stroke-width', 1).merge(link);
 
         // Apply the general update pattern to the nodes.
-        node =node.data(updated_nodes);
+        node = node.data(updated_nodes);
+        console.log(node);
         node.exit().remove();
         node = node.enter().append("circle").attr("class","node")
                     .style("fill", function(d){ return color[scaleColor(get_relation_length(d.id))]})
-                    .attr("r", function(d){ return scaleRadius(get_relation_length(d.id))})
+                    .attr("r", function(d){ 
+                        return scaleRadius(get_relation_length(d.id))
+                    })
                     .attr("stroke","black")
                     .attr('stroke-width', 1)
-                    .on("click",function(d){selectNode(d, graph_nodes, graph_links)})
-                    .on("mousemove",function(d){ showTooltip(d)})
-                    .on("mouseout",  function(d,i) {
+                    .on("click",function(d){
+                        var clickedName = get_concept_name(d);
+                        // console.log(childNodes);
+                        if(!childNodes.includes(clickedName) && (!breadcrumbArray.includes(clickedName)))
+                        {
+                            breadcrumbArray.push(clickedName);
+                        }
+                        
+                        // console.log(breadcrumbArray);
+                        // updateBreacrumb(d);
+                        selectNode(d, graph_nodes, graph_links)})
+                    .on("mouseover",function(d){ 
+                        tooltip.transition()
+                               .duration(700)
+                               .style('opacity', 0.9)
+                               .style('pointer-events', 'none')
+                               .style('position', 'absolute')
+                               .style('text-align', 'left')
+                               .style('font-weight', '4px')
+                               .style('background', 'gainsboro')
+                               .style('border', '0px')
+                               .style('border-radius', '18px')
+                        showTooltip(d)})
+                    .on("mouseleave",  function(d,i) {
+                        tooltip.transition().duration(500)
                         tooltip.classed("hidden", true);
                     }).merge(node);
 
@@ -251,7 +383,8 @@ search_relations_by_cui = function(concept){
         textElements.exit().remove();
         textElements = textElements.enter().append("text").attr("class","texts")
         .text(function (d) { return get_concept_name(d); })
-        .attr("font-size", 10)
+        .attr("font-size", 14)
+        .attr("font-family", "sans-serif")
         .attr("dx", 15)
         .attr("dy", 4).merge(textElements);
 
@@ -284,22 +417,32 @@ search_relations_by_cui = function(concept){
     }
 
     function selectNode(selectedNode, graph_nodes, graph_links ) {
+        console.log(selectedNode);
+        
         restart(graph_nodes, graph_links, selectedNode);
     }
 
     function get_concept_name(selectedNode){
-        if(level2CInfo.has(selectedNode.id))
-            var details = level2CInfo.get(selectedNode.id)
-
-        else if (cInfo.has(selectedNode.id) )
-            var details = cInfo.get(selectedNode.id)
         
-        if(details){         
-        details = details.map(d => d.STR)
-        return ( details[0])
+        if(level2CInfo.has(selectedNode.id)) {
+            var details = level2CInfo.get(selectedNode.id)
+            
         }
 
-        return selectedNode.id
+        else if (cInfo.has(selectedNode.id)) {
+            var details = cInfo.get(selectedNode.id)
+            
+        }
+        
+        if(details){         
+            details = details.map(d => d.STR);
+            
+            childNodes.push(details[0]);
+            console.log('Selected node in get_concept_fn: ', details[0]);
+            return ( details[0])
+        }
+        
+        return selectedNode.id;
         // return Math.min.apply(null, details)
     }
     
@@ -327,12 +470,46 @@ search_relations_by_cui = function(concept){
           .map( function(d) { return parseInt(d); } );
         tooltip.classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+offsetL)+"px;top:"+(mouse[1]+offsetT)+"px")
-          .html("CUI: " + selectedNode.id +"<br>Name:"+ get_concept_name(selectedNode)+"<br>Number of Concept Relations: " +get_relation_length(selectedNode.id)+"<br>Definition: " +get_definition(selectedNode.id));
+          .html("<b>Concept CUI:</b> " + selectedNode.id +"<br><b>Concept Name:</b> "+ get_concept_name(selectedNode)+"<br><b>Number of Concept Relations:</b> " +get_relation_length(selectedNode.id)+"<br><b>Concept Definition:</b> " +get_definition(selectedNode.id));
         //   get_definition(d.id);
 
         //   console.log(selectedNode.id, get_concept_name(selectedNode), get_definition(selectedNode.id))
       }
+
+
+    
 }
+// function initializeBreadcrumb(rootTerm) {
+//     console.log(breadcrumbArray);
+//     var trail = d3.select("#breadcrumb").append("svg")
+//     .attr("width", 960)
+//     .attr("height", 50)
+//     .attr("id", "trail");
+//     trail.append("text")
+//     .append("text")
+//     .attr("id", "endlabel")
+//     .attr("fill", "yellow");
+
+//     d3.select("#trail").style("visibility", "");
+    
+//     var breadcrumb = d3.breadcrumb()
+//         .container('breadcrumb')  
+
+//     breadcrumb = d3.breadcrumb()
+//         .container('svg')   
+//         .padding(5)
+//         .wrapWidth(0)  // hint:  set 100 
+//         .height(28)
+//         .fontSize(14)
+//         .marginLeft(0)
+//         .marginTop(10)
+//         .leftDirection(false)
+//         ;
+        
+    
+//     // show breadcrumbs
+//     breadcrumb.show([{text:rootTerm},{fill:'#E9ECEF'}]);
+// }
 
 search_relations_by_str = function(concept){
     // d3.select(".visual_window").select("h1").remove();
@@ -349,11 +526,20 @@ search_relations_by_str = function(concept){
         dataDefnMap = d3.nest()
                         .key(function(d){return d.CNAME})
                         .map(concept_defn, d3.map);
+        
         if (dataDefnMap.has(concept)){
-        var cui = dataDefnMap.get(concept)[0].CUI
-        search_relations_by_cui(cui);
-        search_atoms_by_cui(cui);}
+            var cui = dataDefnMap.get(concept)[0].CUI
+            
+            rootTerm = concept;
+            breadcrumbArray.push(rootTerm);
+
+            console.log(rootTerm);
+            // initializeBreadcrumb(rootTerm);
+            search_relations_by_cui(cui);
+            // search_atoms_by_cui(cui);
+        }
         else alert("No such string or CUI exists")
     }
+    
 }
 

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+rect {
+  stroke: 'gray';
+}
+
+</style>
+<body>
+    <p>Hello!</p>    
+    <div id="breadcrumb"></div>
+    <div id="icicle"></div>
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script src="breadcrumbs.js"></script>
+    <script>
+
+        var width = 960;
+        var height = 500;
+
+        var x = d3.scaleLinear().range([0, height]);
+        var color = d3.scaleOrdinal(d3.schemeCategory20c);
+        
+        var partition = d3.partition()
+        .size([width, height])
+        .padding(0)
+        .round(true);
+
+        // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
+        var b = {
+            w: 150, h: 30, s: 3, t: 10
+        };
+        var breadcrumbArray = ['test'];
+        console.log(breadcrumbArray);
+        function empty() {
+            breadcrumbArray.length = 0;
+        }
+        empty();
+        console.log(breadcrumbArray);
+        initializeBreadcrumbTrail();
+        var vis = d3.select('#icicle').append("svg")
+                    .style('fill', 'black')                    
+                    .on("click", function() {
+                    breadcrumbArray.push('Element 1'); 
+                    });
+        console.log(breadcrumbArray);
+        
+        //update breadcrumb
+        // Generate a string that describes the points of a breadcrumb polygon.
+        // function breadcrumbPoints(d, i) {
+        //     var points = [];
+        //     points.push("0,0");
+        //     points.push(b.w + ",0");
+        //     points.push(b.w + b.t + "," + (b.h / 2));
+        //     points.push(b.w + "," + b.h);
+        //     points.push("0," + b.h);
+        //     if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
+        //         points.push(b.t + "," + (b.h / 2));
+        //     }
+        //     return points.join(" ");
+        // }
+        // function updateBreadcrums(breadcrumbArray) {
+        //     var trail = d3.select("#trail")
+        //                 .selectAll("g")
+        //                 .data(breadcrumbArray, function(d) {
+        //                     return d.data.key;
+        //                 });
+        //     trail.exit().remove();
+
+        //     var entering = trail.enter().append("g");
+
+        //     entering.append("polygon")
+        //             .attr("points", breadcrumbPoints)
+        //             .style("fill", "yellow");
+        //     entering.append("text")
+        //             .attr("x", (b.w + b.t) / 2)
+        //             .attr("y", b.h / 2)
+        //             .attr("dy", "0.35em")
+        //             .attr("text-anchor", "middle")
+        //             .text(function(d) { return d.data.key; });
+        //     entering.merge(trail).attr("transform", function(d, i) {
+        //             return "translate(" + i * (b.w + b.s) + ", 0)";
+        //     });
+        // }
+        // updateBreadcrums(breadcrumbArray);
+
+        function initializeBreadcrumbTrail() {
+            var trail = d3.select("#breadcrumb").append("svg")
+                        .attr("width", width)
+                        .attr("height", 50)
+                        .attr("id", "trail");
+            trail.append("text")
+            .append("text")
+            .attr("id", "endlabel")
+            .style("fill", "#000");
+
+            d3.select("#trail").style("visibility", "");
+        }
+        var breadcrumb = d3.breadcrumb()
+          .container('svg')  
+
+        // breadcrumb = d3.breadcrumb()
+        //   .container('svg')   
+        //   .padding(5)
+        //   .wrapWidth(0)  // hint:  set 100 
+        //   .height(28)
+        //   .fontSize(14)
+        //   .marginLeft(0)
+        //   .marginTop(10)
+        //   .leftDirection(false)
+      
+        // // show breadcrumbs
+        // breadcrumb.show([{text:"Home"},{text:"Products"},{text:"Phones"},{text:"Some phone with large name"},{fill:'black',text:'summary goes here'}]); 
+
+        var bc = d3.select('#breadcrumb').append('bc')
+                    .attr('class', 'breadcrumnb');
+        bc.select('breadcrumb')
+            .data('Home');
+
+  
+    </script>
+</body>
+
+
+    
