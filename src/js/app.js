@@ -2,6 +2,7 @@ var breadcrumbArray = [];
 var rootTerm = '';
 var childNodes = [];
 search_relations_by_cui = function(concept) {
+    childNodes.length = 0;
     // d3.select(".visual_window").select("h1").remove();
     // header = d3.select(".visual_window").append("h1").text("Search Relations by String")
     var height = 950;
@@ -134,7 +135,7 @@ search_relations_by_cui = function(concept) {
         
         if (dataMap.has(concept))
         {   
-            console.log(concept);
+            // console.log(concept);
             dataMap = dataMap.get(concept);
 
             dataDefnMap = d3.nest()
@@ -157,7 +158,7 @@ search_relations_by_cui = function(concept) {
     }
     
     var radius_dict = {}
-    console.log(radius_dict);
+    // console.log(radius_dict);
     function get_all_number_relations(){
         var arr = []
         arr.push(dataMap.length)
@@ -329,7 +330,7 @@ search_relations_by_cui = function(concept) {
         // breadcrumbArray = [];
         // initializeBreadcrumb(get_concept_name(selectNode));
         // updateBreacrumb(selectNode);
-
+        childNodes.length = 0;
         // console.log("Restarting", updated_nodes.length, updated_links.length);
         scaleRadius = d3.scaleLinear()
                         .domain(get_all_number_relations())
@@ -342,7 +343,7 @@ search_relations_by_cui = function(concept) {
 
         // Apply the general update pattern to the nodes.
         node = node.data(updated_nodes);
-        console.log(node);
+        // console.log(node);
         node.exit().remove();
         node = node.enter().append("circle").attr("class","node")
                     .style("fill", function(d){ return color[scaleColor(get_relation_length(d.id))]})
@@ -352,14 +353,24 @@ search_relations_by_cui = function(concept) {
                     .attr("stroke","black")
                     .attr('stroke-width', 1)
                     .on("click",function(d){
+                        
                         var clickedName = get_concept_name(d);
-                        // console.log(childNodes);
-                        if(!childNodes.includes(clickedName) && (!breadcrumbArray.includes(clickedName)))
+                        if (!breadcrumbArray.includes(clickedName))
                         {
-                            breadcrumbArray.push(clickedName);
+                            console.log(clickedName);
+                            console.log(childNodes);
+                            if(childNodes.includes(clickedName)) {
+                                console.log(breadcrumbArray);
+                                breadcrumbArray.push(clickedName);
+                            }
+                            else {
+                                if(breadcrumbArray.length >= 2) 
+                                    {breadcrumbArray.pop();}
+                                breadcrumbArray.push(clickedName);
+                            }
                         }
                         
-                        // console.log(breadcrumbArray);
+                        console.log(breadcrumbArray);
                         // updateBreacrumb(d);
                         selectNode(d, graph_nodes, graph_links)})
                     .on("mouseover",function(d){ 
@@ -377,12 +388,15 @@ search_relations_by_cui = function(concept) {
                     .on("mouseleave",  function(d,i) {
                         tooltip.transition().duration(500)
                         tooltip.classed("hidden", true);
-                    }).merge(node);
+                    })
+                    .merge(node);
 
         textElements = textElements.data(updated_nodes)
         textElements.exit().remove();
         textElements = textElements.enter().append("text").attr("class","texts")
-        .text(function (d) { return get_concept_name(d); })
+        .text(function (d) { 
+            childNodes.push(get_concept_name(d))
+            return get_concept_name(d); })
         .attr("font-size", 14)
         .attr("font-family", "sans-serif")
         .attr("dx", 15)
@@ -392,7 +406,7 @@ search_relations_by_cui = function(concept) {
         simulation.nodes(updated_nodes).on("tick", ticked)
         simulation.force("link").links(updated_links);
         simulation.restart();
-
+        
         if(selectedNode)    
         {        
             const neighbors = getNeighbours(selectedNode, updated_links)
@@ -414,6 +428,7 @@ search_relations_by_cui = function(concept) {
             .on("end", drag_end);
 
         drag_handler(node);
+        console.log(childNodes);
     }
 
     function selectNode(selectedNode, graph_nodes, graph_links ) {
@@ -435,10 +450,11 @@ search_relations_by_cui = function(concept) {
         }
         
         if(details){         
+            
             details = details.map(d => d.STR);
             
-            childNodes.push(details[0]);
-            console.log('Selected node in get_concept_fn: ', details[0]);
+            
+            // console.log('Selected node in get_concept_fn: ', details[0]);
             return ( details[0])
         }
         
@@ -514,7 +530,7 @@ search_relations_by_cui = function(concept) {
 search_relations_by_str = function(concept){
     // d3.select(".visual_window").select("h1").remove();
     // header = d3.select(".visual_window").append("h1").text("Search Relations by String")
-
+    childNodes.length = 0;
     d3.queue()
     .defer(d3.csv, "./data/concept_info.csv")
     .defer(d3.csv,"./data/definitions.csv")
