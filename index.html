@@ -33,24 +33,24 @@
   <div id = "tool_tip"></div>
   <div class="main">
 
-    <div class = "jumbotron text-center" style="padding: 10px; margin: 0px;">
-      <h1>UMLS METATHESAURUS</h1>
-      <p>Interactive Visual Browser</p>
+    <div class = "jumbotron text-center" style="padding: 10px; margin: 0px; background-color: #6094c6 !important">
+      <h1 style="color: #dfecf9 !important; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 34pt !important;">UMLS METATHESAURUS</h1>
+      <p style="color: #dfecf9 !important; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 25pt;">Visual Browser</p>
     </div>
 
     <div class="container_fluid">
       <div class = "row" style = "padding: 5px;">
-        <div class="col-sm-2" style="background-color: #E8E8E8">
-          <div class = "search_window">
-            <p>Search Box</p>
+        <div class="col-sm-2" style="background-color: white; height: 200px !important">
+          <div class = "search_window" style="">
+            <!-- <p>Search Box</p> -->
 
                 <!-- <form name = "search_form" id = "search_form" onsubmit="search_relations_by_str()"> -->
                   <!-- Radio Buttons -->
                   <div class = "search_radio_buttons">
                       <div class="radio">
-                          <label><input type="radio" name="search_type_radio" value = "search_by_string" checked >String</label>
-
-                          <label><input type="radio" name="search_type_radio" value = "search_by_cui" >CUI</label>
+                          <label style="font-size: 18pt; font-family: Verdana, Geneva, Tahoma, sans-serif;"><input type="radio" name="search_type_radio" value = "search_by_string" checked > String  </label>
+                          
+                          <label style="font-size: 18pt; font-family: Verdana, Geneva, Tahoma, sans-serif;"><input type="radio" name="search_type_radio" value = "search_by_cui" > CUI</label>
                         </div>
                   </div>
 
@@ -74,27 +74,27 @@
                   <!-- Radio Buttons -->
                   <div class = "visualization_radio_buttons">
                       <div class="radio">
-                          <label><input type="radio" name="relation_mapping" checked value = "concept_relation" onclick="hideToBox()">Concept-Atoms Relations</label>
+                          <label style="font-size: 18pt; font-family: Verdana, Geneva, Tahoma, sans-serif;"><input type="radio" name="relation_mapping" checked value = "concept_relation" onclick="hideToBox()"> Concept-Atoms Relations</label>
 
-                          <label><input type="radio" name="relation_mapping" value = "concept_mapping" onclick = "addToBox()">Concept Mapping</label>
+                          <!-- <label><input type="radio" name="relation_mapping" value = "concept_mapping" onclick = "addToBox()">Concept Mapping</label> -->
                         </div>
                   </div>
                 <!-- </form> -->
           </div>
         </div>
 
-        <div class="col-sm-10" style="background-color: #F8F8F8; width: 1500px;">
+        <div class="col-sm-10" style="background-color: white !important; width: 1500px;">
           <div class = "visual_window" id = "visual_window" style="width: 1500px" >
             <!-- <p>Atoms</p> -->
               <!-- <div class = "concept_atoms"  style="height: 600px;"> -->
                 <!-- <p id="atomVisHeader" ></p> -->
               <!-- </div> -->
-              <div class="breadcrumb" id="breadcrumb" style="height: 100px">
+              <div class="breadcrumb" id="breadcrumb" style="height: 100px; background-color: white !important">
                 <!-- <p>Breadcrumb</p> -->
               </div>
               <div id = "tool_tip"></div>
-              <div class = "concept_relations" id= "map" style="height: 900px; width: 1500px;">
-                <p>Concept Relations</p>
+              <div class = "concept_relations" id= "map" style="height: 900px; width: 1900px !important;">
+                <!-- <p>Concept Relations</p> -->
               </div>
           </div>
 
