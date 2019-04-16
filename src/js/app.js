@@ -651,7 +651,7 @@ search_relations_by_str = function(concept){
         dataDefnMap = d3.nest()
                         .key(function(d){return d.CNAME})
                         .map(concept_defn, d3.map);
-        
+        console.log(dataDefnMap);
         if (dataDefnMap.has(concept)){
             var cui = dataDefnMap.get(concept)[0].CUI
             
