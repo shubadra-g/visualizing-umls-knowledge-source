@@ -1,3 +1,6 @@
+var slider = new Slider('#range-slider-input', {});
+
+// console.log(slider);
 search_type = function(){
     var relation_mapping = $('input[name = relation_mapping]:checked').val();
     if (relation_mapping === "concept_relation"){
@@ -8,7 +11,7 @@ search_type = function(){
 
             // change the onsubmit version of the form here to this function name
             var concept = document.getElementById("search_text").value;
-            console.log(concept);
+            // console.log(concept);
             if (concept != "")
             search_relations_by_str(concept);
             else alert("Please enter your String or CUI")

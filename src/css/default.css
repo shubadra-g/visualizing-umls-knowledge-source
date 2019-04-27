@@ -1,0 +1,16 @@
+.slider-holder {
+    display: inline-block;
+    width: 20px;
+    height: 150px;
+    padding: 0;
+    margin: 60px 0 0 0%;
+}
+
+.slider-holder input {
+    width: 150px;
+    height: 20px;
+    margin: 0;
+    transform-origin: 35px 55px;
+    transform: rotate(90deg);
+}
+
