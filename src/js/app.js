@@ -1,17 +1,13 @@
 var sliderValue = slider.setValue([1, 20], triggerSlideEvent='true', triggerChangeEvent='true');
 var clickedID = 0;
 sliderValue = slider.getValue();
-// console.log(sliderValue);
 slider.on("change", function(slideEvt) {
     sliderValue = slider.getValue();
-    // console.log(sliderValue);
     if(clickedID == 0) {
         search_relations_by_cui(cui);
-        // console.log('reseting by search term');
     }
     else {
         search_relations_by_cui(clickedID);
-        // console.log('reseting by clicked node');
     }    
 })
 
@@ -21,8 +17,6 @@ var childNodes = [];
 search_relations_by_cui = function(concept) {
     childNodes.length = 0;
     console.log(concept);
-    // d3.select(".visual_window").select("h1").remove();
-    // header = d3.select(".visual_window").append("h1").text("Search Relations by String")
     var height = 950;
     var width = 1800;
     var b = {
@@ -31,26 +25,18 @@ search_relations_by_cui = function(concept) {
 
     d3.queue()
     .defer(d3.csv, "./data/concept_info.csv")
-    // .defer(d3.csv, "./data/all-level-concept-data-copy.csv")
     .defer(d3.csv,"./data/definitions.csv")
-    // .defer(d3.csv,"./data/all-level-defn-copy.csv")
-    // .defer(d3.csv, "./data/relations.csv") 
     .defer(d3.csv, "./data/combined-reln.csv")  
-    // .defer(d3.csv, "./data/level2 details.csv")
-    // .defer(d3.csv, "./data/new_l2_details.csv")
-    // .defer(d3.csv, "./data/level2 definitions.csv")
     .defer(d3.csv, "./data/deduped-all-concept-data.csv")
     .defer(d3.csv, "./data/all-level-defn.csv")
-    // .defer(d3.csv, "./data/level2 Relations.csv")
     .defer(d3.csv, "./data/deduped-l2-l3-reln.csv")
     .await(ready); 
     
     d3.select(".concept_relations").selectAll(".concept_relations_box").remove();
     var svg = d3.select(".concept_relations").append("div").attr("class", "concept_relations_box")
                 .append("svg").attr("height",height).attr("width",width);
-                // .attr("style", "outline: thin solid black;");
 
-    svg.append("rect")
+                svg.append("rect")
         .attr("class", "background")
         .attr("width", width)
         .attr("height", height)
@@ -59,34 +45,18 @@ search_relations_by_cui = function(concept) {
 
     var breadcrumb = d3.breadcrumb()
                    .container('#breadcrumb')
-                   .padding(15)
-                   ;
-                //    .wrapWidth(0)
+                   .padding(15);
+                   
     var idChecker = [];
     var simulation = d3.forceSimulation()
         .force("charge", d3.forceManyBody().strength(-1900))
         .force("link", 
             d3.forceLink()
               .id(function(d) { 
-                     
-                    // if(idChecker.includes(d.id)) {
-                    //     console.log('ID exists!', d.id)
-                        
-                    // }
-                    // else {
-                    //     console.log(d.id)
-                    //     idChecker.push(d.id);
-                    //     return d.id;
-                    // }
-                    // console.log(d);
                     return d.id;
-                    
-                    
-                     })
+                })
               .distance(function(d) {
                     dID = d.target;
-                    // console.log(dID.id);
-                    // console.log(radius_dict['C0236100']);
                     linkLen = radius_dict[dID.id.toString()];
                     // console.log(linkLen);
                     if (linkLen == 1) {
@@ -116,10 +86,6 @@ search_relations_by_cui = function(concept) {
                     
               }))
         .force("center_force", d3.forceCenter(width / 3, height / 2))
-        // .force("x", d3.forceX(width))
-        // .force("y", d3.forceY(height))
-        // .force("forceX", d3.forceX(width/2).strength(function(d) { return hasLinks(d,graph.links) ? 0 : 0.05; }))
-	    // .force("forceY", d3.forceY(height/2).strength(function(d) { return hasLinks(d,graph.links) ? 0 : 0.05; }))
         .on("tick", ticked);
     
     var g = svg.append("g");
@@ -179,25 +145,15 @@ search_relations_by_cui = function(concept) {
     function ready(error, concept_info, concept_defn, concept_reln, level2_info, level2_defn, level2_relations){
         if (error) return console.log(error);
         readData(concept_info, concept_defn, concept_reln, level2_info, level2_defn, level2_relations);
-        // console.log(concept);
         if (dataMap.has(concept))
         {   
-            // console.log(concept);
             dataMap = dataMap.get(concept);
-            // console.log(dataMap.length);
-            // console.log(dataMap);
             dataDefnMap = d3.nest()
                             .key(function(d){return d.CUI})
                             .map(concept_defn, d3.map);
             
             dataMap.forEach(function(value) {
-                // console.log(level2CRelation.get(value.CUI2).length);
-                
-                // tempLen = (level2CRelation.$C0236100).length;
-                // console.log(level2CRelation.get(value.CUI2));
                 tempLen = level2CRelation.get(value.CUI2).length;
-                // console.log(tempLen);
-                // console.log(idChecker);
                 if (tempLen >= sliderValue[0] && tempLen <= sliderValue[1]) {
                     if(idChecker.includes(value.CUI2)) {
                         // console.log('Not including ID...');
@@ -208,39 +164,19 @@ search_relations_by_cui = function(concept) {
                         idChecker.push(value.CUI2);
                     }
                 }
-                // console.log(graph_node.length);
-                
-
             });
-            // console.log(dataMap);
-            
-            //get_all_number_relations()
-            // updateGraphNode(graph_node);
             restart(graph_node, graph_link);
         }
         else if (level2CRelation.has(concept)) {   
-            // console.log(cui);
             dataMap = dataMap.get(cui);
-            // console.log(dataMap);
             level2CRelation_concept = level2CRelation.get(concept);
-            // console.log(typeof(level2CRelation));
             dataDefnMap = d3.nest()
                             .key(function(d){return d.CUI})
                             .map(concept_defn, d3.map);
             
             var cui2L = [];
             level2CRelation_concept.forEach(function(value) {
-                // console.log(level2CRelation.get(value.CUI2).length);
-                
-                // tempLen = (level2CRelation.$C0236100).length;
-                // console.log(level2CRelation);
-                // console.log(value);
-                // console.log((value.CUI2));
-                // console.log(Object.values(level2CRelation));
-                // console.log(value);
                 tempLen = level2CRelation.get(value.CUI2).length;
-                // console.log(tempLen);
-                // console.log(idChecker);
                 if (tempLen >= sliderValue[0] && tempLen <= sliderValue[1]) {
                     if(idChecker.includes(value.CUI2)) {
                         // console.log('Not including ID...');
@@ -251,58 +187,32 @@ search_relations_by_cui = function(concept) {
                         idChecker.push(value.CUI2);
                     }
                 }
-                // console.log(graph_node.length);
-                
-
             });
-            
-            //get_all_number_relations()
-            // updateGraphNode(graph_node);
             restart(graph_node, graph_link);
-        }
-        
-        else alert("No such String or CUI exists");
+        }        
+        else alert("No such String or CUI exists! String search terms are case-sensitive!");
     }
     
     var radius_dict = {}
     var tempLen = 0;
-    // console.log(radius_dict);
     function get_all_number_relations(){
         var arr = [];
         arr.push(dataMap.length)
         radius_dict[concept]=dataMap.length
-        // console.log(typeof(dataMap));
-        // console.log(dataMap);
-        
         dataMap.forEach(function(val){
             tempLen = level2CRelation.get(val.CUI2).length
-            // console.log(tempLen);
-            // if (tempLen < sliderLower && tempLen > sliderUpper) {
                 arr.push(level2CRelation.get(val.CUI2).length)
                 radius_dict[val.CUI2]=level2CRelation.get(val.CUI2).length
-            // }
-            
         });
-        // console.log(Math.min.apply(null, arr))
-        // console.log(Math.max.apply(null, arr))
-        // console.log(arr);
         return ([Math.min.apply(null, arr), Math.max.apply(null, arr)])
     }
 
     function get_relation_length(selectedNode){
-        // console.log(selectedNode);
-        // console.log(radius_dict);
         if (selectedNode in radius_dict) {
-            
-            // console.log(radius_dict[selectedNode]);
-                return radius_dict[selectedNode]
-            
+            return radius_dict[selectedNode]
         }
-        
         else return 1;
     }
-
-
     function drag_start(d) {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
            d.fx = d.x;
@@ -319,10 +229,7 @@ search_relations_by_cui = function(concept) {
         d.fx = null;
         d.fy = null;
     }
-
-    var counter = 0;
-    var flag = false;
-
+    
     function ticked() {
        
         link.attr("x1", function(d) { return d.source.x; })
@@ -372,64 +279,49 @@ search_relations_by_cui = function(concept) {
         return neighbors.indexOf(nod.id) != -1 ? 'green' : 'black'
     }
     
-    // initializeBreadcrumb();
-
     function update(graph_nodes, graph_links,selectedNode)
     {
         var gl = [], gn = [];
        
         if(selectedNode &&  selectedNode.id !== concept)
         { 
-           level2_relations = level2CRelation.get(selectedNode.id)
-            // console.log(level2_relations);
-            level2_relations.forEach(function(value){
-                // console.log(value);
+            level2_relations = level2CRelation.get(selectedNode.id)
+            level2_relations.forEach(function(value) {
                 if (value.CUI1 !== concept && value.CUI2 !== concept)
                 {
-                gn.push({'id':value.CUI2})
-                gl.push({'source':value.CUI1, 'target':value.CUI2})
+                    gn.push({'id':value.CUI2})
+                    gl.push({'source':value.CUI1, 'target':value.CUI2})
                 }
             });
-            // console.log("New Nodes: ",gn.length,gl.length)
         }
        let updated_nodes = graph_nodes.concat(gn);
        let updated_links = graph_links.concat(gl);
-    //    console.log("Updation",updated_nodes.length, updated_links.length)
-        return [updated_nodes, updated_links];
+       return [updated_nodes, updated_links];
     }
      
     function updateBreacrumb(nodeData) {
-
         breadcrumb = d3.breadcrumb()
             .container('svg')   
             .padding(5)
-            .wrapWidth(0)  // hint:  set 100 
+            .wrapWidth(0) 
             .height(28)
             .fontSize(20)
             .marginLeft(0)
             .marginTop(10)
             .leftDirection(false)
             ;
-        // console.log(nodeData);
-        // console.log(breadcrumbArray);
-        var i = 0;
         breadcrumb.show(breadcrumbArray);
-        
     }   
-    
-    
+        
     function restart(graph_nodes, graph_links, selectedNode)
     {   
         updated = update(graph_nodes, graph_links,selectedNode)
-        // console.log(updated);
         let updated_nodes = updated[0];
         let updated_links = updated[1];
-        // breadcrumbArray = [];
         initializeBreadcrumb(get_concept_name(selectNode));
         updateBreacrumb(selectedNode);
         childNodes.length = 0;
         relationsList = [];
-        // console.log("Restarting", updated_nodes.length, updated_links.length);
         scaleRadius = d3.scaleLinear()
                         .domain(get_all_number_relations())
                         .range([8, 45]);
@@ -438,16 +330,12 @@ search_relations_by_cui = function(concept) {
         link.exit().remove();
         link = link.enter().append("line").attr("class","link")
                     .attr("stroke","black").attr('stroke-width', 1).merge(link);
-
-        // Apply the general update pattern to the nodes.
-        // console.log(updated_nodes);
         node = node.data(updated_nodes);
         // console.log(node);
         node.exit().remove();
         node = node.enter().append("circle").attr("class","node")
                     .style("fill", function(d){ return color[scaleColor(get_relation_length(d.id))]})
                     .attr("r", function(d){ 
-                        // console.log(scaleRadius(get_relation_length(d.id)));
                         return scaleRadius(get_relation_length(d.id));
                     })
                     .attr("stroke","black")
@@ -457,30 +345,20 @@ search_relations_by_cui = function(concept) {
                         clickedName = get_concept_name(d);
                         if (!breadcrumbArray.includes(clickedName))
                         {
-                            // console.log(clickedName);
-                            // console.log(childNodes);
                             if(childNodes.includes(clickedName)) {
-                                // console.log(breadcrumbArray);
                                 breadcrumbArray.push(clickedName);
                             }
                             else {
                                 if(breadcrumbArray.length >= 2) 
                                     {
                                         breadcrumbArray = [];
-                                        // breadcrumbArray.pop();
-                                        // breadcrumbArray.pop();
-                                        // breadcrumbArray.pop();
                                         breadcrumbArray.push(rootTerm);
                                         updateBreacrumb(breadcrumbArray);
                                         
                                     }
                                 breadcrumbArray.push(clickedName);
-                                // console.log(breadcrumbArray);
                             }
                         }
-                        
-                        // console.log(breadcrumbArray);
-                        // updateBreacrumb(d);
                         updateBreacrumb(breadcrumbArray);
                         selectNode(d, graph_nodes, graph_links)
                     })
@@ -514,7 +392,7 @@ search_relations_by_cui = function(concept) {
         .attr("dx", 20)
         .attr("dy", 20).merge(textElements);
 
-        // Update and restart the simulation.
+        // Updating and restarting the simulation
         simulation.nodes(updated_nodes).on("tick", ticked)
         simulation.force("link").links(updated_links);
         simulation.restart();
@@ -544,34 +422,24 @@ search_relations_by_cui = function(concept) {
     }
     
     function selectNode(selectedNode, graph_nodes, graph_links ) {
-        // console.log(selectedNode);
-        
         restart(graph_nodes, graph_links, selectedNode);
     }
 
     function get_concept_name(selectedNode){
-        // console.log(selectedNode);
         if(level2CInfo.has(selectedNode.id)) {
             var details = level2CInfo.get(selectedNode.id)
-            // console.log(details);
         }
 
         else if (cInfo.has(selectedNode.id)) {
             var details = cInfo.get(selectedNode.id)
-            // console.log(details);
         }
         
-        if(details){         
-            
+        if (details) {         
             details = details.map(d => d.STR);
-            
-            
-            // console.log('Selected node in get_concept_fn: ', details[0]);
             return ( details[0])
         }
         
         return selectedNode.id;
-        // return Math.min.apply(null, details)
     }
     
     function reset(){
@@ -583,7 +451,6 @@ search_relations_by_cui = function(concept) {
     }
     function get_definition(selectedNode){
 
-        // console.log(selectedNode);  
         if (level2Defn.has(selectedNode)){
             definition = level2Defn.get(selectedNode)
             definition = definition.map(d => d.DEF)
@@ -600,63 +467,43 @@ search_relations_by_cui = function(concept) {
         tooltip.classed("hidden", false)
           .attr("style", "left:"+(mouse[0]+offsetL)+"px;top:"+(mouse[1]+offsetT)+"px")
           .html("<b>Concept CUI:</b> " + selectedNode.id +"<br><b>Concept Name:</b> "+ get_concept_name(selectedNode)+"<br><b>Number of Concept Relations:</b> " +get_relation_length(selectedNode.id)+"<br><b>Concept Definition:</b> " +get_definition(selectedNode.id));
-        //   get_definition(d.id);
-
-        //   console.log(selectedNode.id, get_concept_name(selectedNode), get_definition(selectedNode.id))
-      }
+    }
     
 }
 function initializeBreadcrumb(rootTerm) {
-    // console.log(breadcrumbArray);?
     var trailIn = d3.select("#breadcrumb").append("svg")
         .attr("width", 960)
         .attr("height", 50)
         .attr("id", "trailIn");
     trailIn.append("text")
         .append("text");
-    // .attr("id", "endlabel")
-    // .attr("fill", "yellow");
-
     d3.select("#trailIn").style("visibility", '');
-    
     var breadcrumb = d3.breadcrumb()
         .container('breadcrumb')  
-
     breadcrumb = d3.breadcrumb()
         .container('svg')   
         .padding(5)
-        .wrapWidth(0)  // hint:  set 100 
+        .wrapWidth(0)  
         .height(28)
         .fontSize(14)
         .marginLeft(0)
         .marginTop(10)
         .leftDirection(false)
-        
         ;
-        
-    
-    // show breadcrumbs
-    // breadcrumb.show([{text:rootTerm},{fill:'#E9ECEF'}]);
-}
+
+    }
 var cui = 0;
 search_relations_by_str = function(concept){
-    // d3.select(".visual_window").select("h1").remove();
-    // header = d3.select(".visual_window").append("h1").text("Search Relations by String")
     childNodes.length = 0;
     if (breadcrumbArray.length >= 0) {
         for (var x = 0; x < breadcrumbArray.length; x++) {
             breadcrumbArray.pop();
         }
     }
-    // console.log('success');
-    // console.log(breadcrumbArray);
     d3.queue()
     .defer(d3.csv, "./data/deduped-all-concept-data.csv")
     .defer(d3.csv,"./data/all-level-defn-copy.csv")
     .defer(d3.csv, "./data/relations.csv")  
-    // .defer(d3.csv, "./data/concept_info.csv")
-    // .defer(d3.csv,"./data/definitions.csv")
-    // .defer(d3.csv, "./data/relations.csv")
     .await(ready);
     function ready(error, concept_info, concept_defn, concept_reln){
         if (error) return console.log(error);
@@ -664,23 +511,13 @@ search_relations_by_str = function(concept){
         dataDefnMap = d3.nest()
                         .key(function(d){return d.STR})
                         .map(concept_defn, d3.map);
-        // console.log(dataDefnMap);
-        // console.log(concept);
-        if (dataDefnMap.has(concept)){
-            // console.log('in');
+        if (dataDefnMap.has(concept)) {
             cui = dataDefnMap.get(concept)[0].CUI
-            // console.log(cui);
-            
             rootTerm = concept;
-            // console.log(breadcrumbArray);
             breadcrumbArray.push(rootTerm);
-
-            // console.log(rootTerm);
             initializeBreadcrumb(rootTerm);
             search_relations_by_cui(cui);
-            // search_atoms_by_cui(cui);
         }
         else alert("No such string or CUI exists line 607")
-    }
-    
+    }    
 }
