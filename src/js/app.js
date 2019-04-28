@@ -1,17 +1,17 @@
 var sliderValue = slider.setValue([1, 20], triggerSlideEvent='true', triggerChangeEvent='true');
 var clickedID = 0;
 sliderValue = slider.getValue();
-console.log(sliderValue);
+// console.log(sliderValue);
 slider.on("change", function(slideEvt) {
     sliderValue = slider.getValue();
-    console.log(sliderValue);
+    // console.log(sliderValue);
     if(clickedID == 0) {
         search_relations_by_cui(cui);
-        console.log('reseting by search term');
+        // console.log('reseting by search term');
     }
     else {
         search_relations_by_cui(clickedID);
-        console.log('reseting by clicked node');
+        // console.log('reseting by clicked node');
     }    
 })
 
@@ -34,11 +34,13 @@ search_relations_by_cui = function(concept) {
     // .defer(d3.csv, "./data/all-level-concept-data-copy.csv")
     .defer(d3.csv,"./data/definitions.csv")
     // .defer(d3.csv,"./data/all-level-defn-copy.csv")
-    .defer(d3.csv, "./data/relations.csv") 
-    // .defer(d3.csv, "./data/apr25-all-relations.csv")  
+    // .defer(d3.csv, "./data/relations.csv") 
+    .defer(d3.csv, "./data/combined-reln.csv")  
     // .defer(d3.csv, "./data/level2 details.csv")
-    .defer(d3.csv, "./data/new_l2_details.csv")
-    .defer(d3.csv, "./data/level2 definitions.csv")
+    // .defer(d3.csv, "./data/new_l2_details.csv")
+    // .defer(d3.csv, "./data/level2 definitions.csv")
+    .defer(d3.csv, "./data/deduped-all-concept-data.csv")
+    .defer(d3.csv, "./data/all-level-defn.csv")
     // .defer(d3.csv, "./data/level2 Relations.csv")
     .defer(d3.csv, "./data/deduped-l2-l3-reln.csv")
     .await(ready); 
@@ -76,7 +78,7 @@ search_relations_by_cui = function(concept) {
                     //     idChecker.push(d.id);
                     //     return d.id;
                     // }
-                    console.log(d);
+                    // console.log(d);
                     return d.id;
                     
                     
@@ -142,14 +144,14 @@ search_relations_by_cui = function(concept) {
     var level2CRelation, level2CInfo, cInfo;
     var scaleRadius, scaleColor;
     var cDefn, level2Defn, strDefn;
-    var color = ['#e7eef4','#cfddea', '#b8cce0', '#a0bcd6', '#89abcc', '#719ac2', '#598ab8', '#4279ae', '#2a68a4', '#13589a'];
-
+    // var color = ['#e7eef4','#cfddea', '#b8cce0', '#a0bcd6', '#89abcc', '#719ac2', '#598ab8', '#4279ae', '#2a68a4', '#13589a'];
+    var color = ['#D5E5F3', '#97BEE3', '#82B1DD', '#6EA4D7', '#5997D2', '#448ACC', '#307EC7', '#2B71B3', '#26649F', '#21588B', '#1C4B77'];
     function readData(concept_info, concept_defn, concept_reln, level2_info, level2_defn, level2_relations) {
         dataMap = d3.nest()
                     .key(function(d){
                         return d.CUI1})
                     .map(concept_reln, d3.map);
-        console.log(dataMap);
+        
         level2CRelation = d3.nest()
                     .key(function(d){
                         return d.CUI1})
@@ -183,22 +185,22 @@ search_relations_by_cui = function(concept) {
             // console.log(concept);
             dataMap = dataMap.get(concept);
             // console.log(dataMap.length);
-            console.log(dataMap);
+            // console.log(dataMap);
             dataDefnMap = d3.nest()
                             .key(function(d){return d.CUI})
                             .map(concept_defn, d3.map);
             
-            var cui2L = [];
             dataMap.forEach(function(value) {
                 // console.log(level2CRelation.get(value.CUI2).length);
                 
                 // tempLen = (level2CRelation.$C0236100).length;
+                // console.log(level2CRelation.get(value.CUI2));
                 tempLen = level2CRelation.get(value.CUI2).length;
                 // console.log(tempLen);
-                console.log(idChecker);
+                // console.log(idChecker);
                 if (tempLen >= sliderValue[0] && tempLen <= sliderValue[1]) {
                     if(idChecker.includes(value.CUI2)) {
-                        console.log('Not including ID...');
+                        // console.log('Not including ID...');
                     }
                     else {
                         graph_node.push({'id':value.CUI2});
@@ -210,18 +212,18 @@ search_relations_by_cui = function(concept) {
                 
 
             });
-            console.log(dataMap);
+            // console.log(dataMap);
             
             //get_all_number_relations()
             // updateGraphNode(graph_node);
             restart(graph_node, graph_link);
         }
         else if (level2CRelation.has(concept)) {   
-            console.log(cui);
+            // console.log(cui);
             dataMap = dataMap.get(cui);
-            console.log(dataMap);
+            // console.log(dataMap);
             level2CRelation_concept = level2CRelation.get(concept);
-            console.log(typeof(level2CRelation));
+            // console.log(typeof(level2CRelation));
             dataDefnMap = d3.nest()
                             .key(function(d){return d.CUI})
                             .map(concept_defn, d3.map);
@@ -231,17 +233,17 @@ search_relations_by_cui = function(concept) {
                 // console.log(level2CRelation.get(value.CUI2).length);
                 
                 // tempLen = (level2CRelation.$C0236100).length;
-                console.log(level2CRelation);
-                console.log(value);
-                console.log((value.CUI2));
-                console.log(Object.values(level2CRelation));
-                
+                // console.log(level2CRelation);
+                // console.log(value);
+                // console.log((value.CUI2));
+                // console.log(Object.values(level2CRelation));
+                // console.log(value);
                 tempLen = level2CRelation.get(value.CUI2).length;
                 // console.log(tempLen);
-                console.log(idChecker);
+                // console.log(idChecker);
                 if (tempLen >= sliderValue[0] && tempLen <= sliderValue[1]) {
                     if(idChecker.includes(value.CUI2)) {
-                        console.log('Not including ID...');
+                        // console.log('Not including ID...');
                     }
                     else {
                         graph_node.push({'id':value.CUI2});
@@ -269,8 +271,8 @@ search_relations_by_cui = function(concept) {
         var arr = [];
         arr.push(dataMap.length)
         radius_dict[concept]=dataMap.length
-        console.log(typeof(dataMap));
-        console.log(dataMap);
+        // console.log(typeof(dataMap));
+        // console.log(dataMap);
         
         dataMap.forEach(function(val){
             tempLen = level2CRelation.get(val.CUI2).length
@@ -283,7 +285,7 @@ search_relations_by_cui = function(concept) {
         });
         // console.log(Math.min.apply(null, arr))
         // console.log(Math.max.apply(null, arr))
-        
+        // console.log(arr);
         return ([Math.min.apply(null, arr), Math.max.apply(null, arr)])
     }
 
@@ -419,7 +421,7 @@ search_relations_by_cui = function(concept) {
     function restart(graph_nodes, graph_links, selectedNode)
     {   
         updated = update(graph_nodes, graph_links,selectedNode)
-        console.log(updated);
+        // console.log(updated);
         let updated_nodes = updated[0];
         let updated_links = updated[1];
         // breadcrumbArray = [];
@@ -431,7 +433,6 @@ search_relations_by_cui = function(concept) {
         scaleRadius = d3.scaleLinear()
                         .domain(get_all_number_relations())
                         .range([8, 45]);
-        console.log(scaleRadius);
         scaleColor = d3.scaleLinear().domain(get_all_number_relations()).rangeRound([0,7])
         link = link.data(updated_links);
         link.exit().remove();
@@ -446,7 +447,8 @@ search_relations_by_cui = function(concept) {
         node = node.enter().append("circle").attr("class","node")
                     .style("fill", function(d){ return color[scaleColor(get_relation_length(d.id))]})
                     .attr("r", function(d){ 
-                        return scaleRadius(get_relation_length(d.id))
+                        // console.log(scaleRadius(get_relation_length(d.id)));
+                        return scaleRadius(get_relation_length(d.id));
                     })
                     .attr("stroke","black")
                     .attr('stroke-width', 1)
@@ -581,6 +583,7 @@ search_relations_by_cui = function(concept) {
     }
     function get_definition(selectedNode){
 
+        // console.log(selectedNode);  
         if (level2Defn.has(selectedNode)){
             definition = level2Defn.get(selectedNode)
             definition = definition.map(d => d.DEF)
@@ -628,6 +631,7 @@ function initializeBreadcrumb(rootTerm) {
         .marginLeft(0)
         .marginTop(10)
         .leftDirection(false)
+        
         ;
         
     
@@ -647,7 +651,7 @@ search_relations_by_str = function(concept){
     // console.log('success');
     // console.log(breadcrumbArray);
     d3.queue()
-    .defer(d3.csv, "./data/all-level-concept-data-copy.csv")
+    .defer(d3.csv, "./data/deduped-all-concept-data.csv")
     .defer(d3.csv,"./data/all-level-defn-copy.csv")
     .defer(d3.csv, "./data/relations.csv")  
     // .defer(d3.csv, "./data/concept_info.csv")

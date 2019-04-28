@@ -14,3 +14,52 @@
     transform: rotate(90deg);
 }
 
+#title-header a:hover{
+    background-color: #b1b7bc !important;
+    text-decoration: none;
+}
+
+#title-header {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 22pt;
+    color: #dfecf9;
+}
+
+#visual-browser-title   {
+    background-color: #b1b7bc !important;
+}
+
+.content {
+    display: inline-flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 80%;
+    padding-left: 485px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 25px;
+    color: 	#191919;
+    align-content: center;
+    text-align: justify;
+}
+
+.content:list {
+    text-align: left; 
+}
+
+.how-to-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    width: 80%;
+    padding-left: 480px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 25px;
+    color: 	#191919;
+    align-content: center;
+    text-align: justify;
+
+}
+
+.how-to-content:list {
+    text-align: justify; 
+}

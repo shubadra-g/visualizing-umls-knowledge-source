@@ -7,8 +7,8 @@
   <meta name="author" content="">
   <title>UMLS Metathesaurus Visualization</title>
   <!-- CSS Libraries -->
-  <link rel="stylesheet" href="src/css/default.css" type="text/css">
-  <link rel="stylesheet" href="src/css/styles.scss" type="text/css">
+  <link rel="stylesheet" href="../css/default.css" type="text/css">
+  <link rel="stylesheet" href="../css/styles.scss" type="text/css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.6.1/css/bootstrap-slider.css" />
@@ -35,10 +35,37 @@
   <div id = "tool_tip"></div>
   <div class="main">
 
-    <div class = "jumbotron text-center" style="padding: 10px; margin: 0px; background-color: #6094c6 !important">
-      <h1 style="color: #dfecf9 !important; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 34pt !important;">UMLS METATHESAURUS</h1>
-      <a href="./index.html"><p style="color: #dfecf9 !important; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 25pt;">Visual Browser</p></a>
-      <a href="./src/html/about.html" style="color: #dfecf9 !important; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 22pt;">About | </a>
-      <a href="howTo.html" style="color: #dfecf9 !important; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 22pt;">How To</a>
-      About Page  
+    <div class = "jumbotron text-center" id="title-header" style="padding: 10px; margin: 0px; background-color: #6094c6 !important">
+      <h1 style="color: #cde0f3 !important; font-size: 34pt !important;">UMLS METATHESAURUS</h1>
+      <a href="../../index.html" id="visual-browser-title"><p style="color: #dfecf9 !important; font-size: 25pt;">Visual Browser</p></a>
+      <a href="about.html" style="color: #dfecf9 !important; font-size: 22pt;">About</a> |
+      <a href="howTo.html" style="color: #dfecf9 !important; font-size: 22pt;"> How To</a>
+      
     </div>
+
+    <div class = "content">
+        <p> 
+            <br><br><br>UMLS Metathesaurus Visual Browser depicts concept relations for terms present in the Metathesaurus. Data is sourced from Unified Medical Language System by National Library of Medicine (NLM), under a license. 
+            UMLS has three knowledge sources and one of the is the Metathesaurus. The dataset used is 2018AA. 
+            <br> 
+            <h5 style="color: #428ed6; font-family: Verdana, Geneva, Tahoma, sans-serif;"><b>Motivation Behind the Developing Visual Browser</b></h5>
+            The current interface for Metathesaurus consists of flowcharts and tabular data. However, these representations score low on ease of use. The language and acronyms in the thesaurus require a certain level of domain knowledge - to use the interface and gather results. This project is a visual browser for the UMLS Metathesaurus and aims to increase the user base as well as present data in the thesaurus in an interactive format.
+            <br> The corresponding concept relations for the search term are displayed. The 'How To' page has more details on using this browser.
+            <p><h5 style="color: #428ed6; font-family: Verdana, Geneva, Tahoma, sans-serif;"><b>Acknowledgement & Credits</b></h5>
+                <ul>
+                    <li>I would like to thank my advisor - Dr. G. Elisabeta Marai from the Electronic Visualization Laboratory (EVL), University of Illinois at Chicago (UIC). Dr. Marai has always been supportive and has provided the necessary direction.</li>
+                    <li> This project was developed under the expertise of Dr. Andrew Boyd from UIC's School of Biomedical and Health Information Sciences. Dr. Boyd provided domain knowledge, time and support to actualize this project.</li>
+                    <li> Rohit C. Vibhu and Kushagradhi Bhowmik for working on this project with me in October to December 2018. I particularly enjoyed our brainstorming and design sessions - thank you supporting me throughout!</li>
+                    <li> This website uses HTMLS, CSS, JavaScript and SVG. I am grateful to the developers of the open source components for their contribution to the community.</li>
+                    <li> <a href="https://d3js.org/">Mike Bostock for D3.js</a></li>
+                    <li> <a href="https://github.com/seiyria/bootstrap-slider">Bootstrap Slider</a></a></li>
+                    <li> <a href="https://bl.ocks.org/bumbeishvili"> David Bumbeishvili's Structure of Breadcrumbs</a></li>
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/SVG" target="_blank">SVG Reference Documentation</a></li>
+                    <li><a href="https://w3schools.com" target="_blank">JavaScript References</a></li>
+                </ul>
+            </p>
+        </p>
+    </div>
+   
+  </div>
+</body>

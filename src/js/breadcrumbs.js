@@ -41,10 +41,16 @@ d3.breadcrumb = function (params) {
         // console.log(array);
         //each arrows wrapper
         var g = breadcrumbTrail.selectAll('.breadcrumb')
-          .data(sequenceArray);
+          .data(sequenceArray)
+          
+          ;
         // g.exit().remove();
         
-        var entering = g.enter().append('svg:g').style('pointer-events', 'none');
+        var entering = g.enter()
+          .append('svg:g')
+          .style('pointer-events', 'none')
+          
+          ;
 
         //arrow polygons
         entering.append("svg:polygon")
@@ -52,6 +58,8 @@ d3.breadcrumb = function (params) {
             if (d.fill) return d.fill;
             return defaultColors[i % defaultColors.length];
           })
+          
+          ;
 
         //arrow texts
         var enteredText = entering.append('svg:text')
@@ -61,9 +69,13 @@ d3.breadcrumb = function (params) {
           .attr('font-size', d => {
             return d.fontSize ? d.fontSize : attrs.fontSize;
           })
+          
           .text(function (d) { 
             // console.log(d);
-            return d; });
+            
+            return d; })
+          // .on('click', console.log('~~~'))
+          ;
 
         //change anchor based on arrow direction  
         if (attrs.leftDirection) {
@@ -75,7 +87,8 @@ d3.breadcrumb = function (params) {
           .attr('class', 'breadcrumbs')
           .attr('transform', function (d, i) {
             return 'translate(0,0)'
-          });
+          })
+          ;
 
         //recalculate merged selection positions
         var startX = attrs.marginLeft;
@@ -113,8 +126,13 @@ d3.breadcrumb = function (params) {
         //remove exited groups
         g.exit().remove();
 
+        
+
         // show breadcrumbs
-        breadcrumbTrail.selectAll('.breadcrumbs').attr('visibility', '')
+        breadcrumbTrail.selectAll('.breadcrumbs')
+          .attr('visibility', '')
+          
+          ;
       }
 
       // build right directioned arrow from points
@@ -180,7 +198,7 @@ d3.breadcrumb = function (params) {
         attrs.data = [];
         breadcrumbTrail.selectAll('g').remove();
       }
-
+      
       //#########################################  UTIL FUNCS ##################################
 
       function debug() {
