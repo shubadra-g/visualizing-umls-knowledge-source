@@ -8,6 +8,6 @@ This project visualizes the relationships between different concepts. The baseli
 
 This is my Masters project at UIC. My advisor is Dr. G. Elisabeta Marai from the Department of Computer Science. 
 
-Live Website - https://shubadra-g.github.io/umls-metathesaurus-vis-browser/src/html/howTo.html 
+Live Website - https://shubadra-g.github.io/umls-metathesaurus-vis-browser/
 
 
