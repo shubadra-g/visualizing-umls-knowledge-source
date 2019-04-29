@@ -16,7 +16,7 @@ var rootTerm = '';
 var childNodes = [];
 search_relations_by_cui = function(concept) {
     childNodes.length = 0;
-    console.log(concept);
+    // console.log(concept);
     var height = 950;
     var width = 1800;
     var b = {
@@ -30,8 +30,8 @@ search_relations_by_cui = function(concept) {
     .defer(d3.csv, "./data/deduped-all-concept-data.csv")
     .defer(d3.csv, "./data/all-level-defn.csv")
     .defer(d3.csv, "./data/deduped-l2-l3-reln.csv")
-    .await(ready); 
-    
+    .await(ready);  
+    d3.selectAll('.breadcrumb').remove();
     d3.select(".concept_relations").selectAll(".concept_relations_box").remove();
     var svg = d3.select(".concept_relations").append("div").attr("class", "concept_relations_box")
                 .append("svg").attr("height",height).attr("width",width);
@@ -141,31 +141,97 @@ search_relations_by_cui = function(concept) {
 
         strDefn = Object.assign({},cDefn,level2Defn);
     }
+    function timedRefresh(timeoutPeriod) {
+        // setTimeout(function() {
+        //     "location.reload(true)"; 
+        //     sliderValue = slider.setValue([1, 20], triggerSlideEvent='true', triggerChangeEvent='true');
+        //     this.addEventListener("load", search_relations_by_str(rootTerm));
+        // }, timeoutPeriod);
+        sessionStorage.setItem('searchTerm', rootTerm);
+        setTimeout("location.reload(true)", timeoutPeriod*10);
+        // window.onload = function() {
+        //     var prevSearchedTerm = sessionStorage.getItem('searchTerm');
+        //     search_relations_by_str(prevSearchedTerm);
+        // }
+        // d3.select(".concept_relations").selectAll(".concept_relations_box").remove();
+        // breadcrumbArray = [];
+        // // d3.selectAll('.breadcrumb').remove();
+        // var breadcrumb = d3.breadcrumb()
+        //            .container('#breadcrumb')
+        //            .padding(15);
+        // breadcrumb.show(breadcrumbArray);
+        // search_relations_by_str(rootTerm);
+    }
     
     function ready(error, concept_info, concept_defn, concept_reln, level2_info, level2_defn, level2_relations){
         if (error) return console.log(error);
         readData(concept_info, concept_defn, concept_reln, level2_info, level2_defn, level2_relations);
         if (dataMap.has(concept))
         {   
+            console.log(concept);
             dataMap = dataMap.get(concept);
             dataDefnMap = d3.nest()
                             .key(function(d){return d.CUI})
                             .map(concept_defn, d3.map);
-            
+              
+            var undefined_flag = false;
             dataMap.forEach(function(value) {
-                tempLen = level2CRelation.get(value.CUI2).length;
-                if (tempLen >= sliderValue[0] && tempLen <= sliderValue[1]) {
-                    if(idChecker.includes(value.CUI2)) {
-                        // console.log('Not including ID...');
+                if(level2CRelation.get(value.CUI2) == undefined) {
+                    if(concept == cui) {
+                        alert('Data not available for this term, please try another term!')
+                        // window.stop();
+                        sessionStorage.removeItem('searchTerm');
+                        sessionStorage.clear();
+                        window.stop();
+                        throw 'Data not available for this term...';
+                        // setTimeout("location.reload(true)", 800);
+
                     }
                     else {
-                        graph_node.push({'id':value.CUI2});
-                        graph_link.push({'source':value.CUI1, 'target': value.CUI2,});
-                        idChecker.push(value.CUI2);
+                        undefined_flag = true;
+                        alert('Data not available for this term! Page will refresh in 10 seconds!');
+                        window.stop();
+                        timedRefresh(15);
+                        throw 'Data not available for this term...';
                     }
+                    
+                }
+                else { 
+                    undefined_flag = false;
                 }
             });
-            restart(graph_node, graph_link);
+            
+            console.log(undefined_flag);
+
+            // 
+            try {
+                if(undefined_flag == false) {
+                        
+                    dataMap.forEach(function(value) {
+                        tempLen = level2CRelation.get(value.CUI2).length;
+                        if (tempLen >= sliderValue[0] && tempLen <= sliderValue[1]) {
+                            if(idChecker.includes(value.CUI2)) {
+                                // console.log('Not including ID...');
+                            }
+                            else {
+                                graph_node.push({'id':value.CUI2});
+                                graph_link.push({'source':value.CUI1, 'target': value.CUI2,});
+                                idChecker.push(value.CUI2);
+                            }
+                        }
+                        
+                    });
+                    restart(graph_node, graph_link);
+                }
+            }
+            catch(e) {
+                console.log(e);
+                alert('Data not available!');
+                window.stop();
+                timedRefresh(15);
+                
+                
+            }
         }
         else if (level2CRelation.has(concept)) {   
             dataMap = dataMap.get(cui);
@@ -200,11 +266,39 @@ search_relations_by_cui = function(concept) {
         arr.push(dataMap.length)
         radius_dict[concept]=dataMap.length
         dataMap.forEach(function(val){
+            if(level2CRelation.get(val.CUI2) == undefined) {
+                if(concept == cui) {
+                    alert('Data not available for this term, please try another term!')
+                    sessionStorage.removeItem('searchTerm');
+                    sessionStorage.clear();
+                    window.stop();
+                    // setTimeout("location.reload(true)", 800);
+
+                }
+                undefined_flag = true;
+                alert('Data not available for this term! Page will refresh in 10 seconds!');
+                window.stop();
+                timedRefresh(15);
+                throw 'Cannot find length for undefined...';
+
+            }
+            
+        });
+        try {
+        dataMap.forEach(function(val){
             tempLen = level2CRelation.get(val.CUI2).length
                 arr.push(level2CRelation.get(val.CUI2).length)
                 radius_dict[val.CUI2]=level2CRelation.get(val.CUI2).length
         });
         return ([Math.min.apply(null, arr), Math.max.apply(null, arr)])
+        }
+        catch {
+            console.log(e);
+            alert(e);
+            window.stop();
+            
+        }
+        
     }
 
     function get_relation_length(selectedNode){
@@ -422,7 +516,13 @@ search_relations_by_cui = function(concept) {
     }
     
     function selectNode(selectedNode, graph_nodes, graph_links ) {
-        restart(graph_nodes, graph_links, selectedNode);
+        try {
+            restart(graph_nodes, graph_links, selectedNode);
+        }
+        catch {
+            alert('Data not available for this term! Page will refresh in 10 seconds.');
+            timedRefresh(15);
+        }
     }
 
     function get_concept_name(selectedNode){
@@ -493,9 +593,17 @@ function initializeBreadcrumb(rootTerm) {
 
     }
 var cui = 0;
+
 search_relations_by_str = function(concept){
     childNodes.length = 0;
-    if (breadcrumbArray.length >= 0) {
+    // console.log(sessionStorage.getItem('searchTerm'));
+    // if (concept == sessionStorage.getItem('searchTerm')) {
+    //     console.log('Same term');
+    //     sessionStorage.clear();
+    //     window.stop();
+
+    // }
+    if (breadcrumbArray.length > 0) {
         for (var x = 0; x < breadcrumbArray.length; x++) {
             breadcrumbArray.pop();
         }
@@ -518,6 +626,6 @@ search_relations_by_str = function(concept){
             initializeBreadcrumb(rootTerm);
             search_relations_by_cui(cui);
         }
-        else alert("No such string or CUI exists!")
+        else alert("No such string or CUI exists!");
     }    
 }
