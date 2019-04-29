@@ -502,7 +502,7 @@ search_relations_by_str = function(concept){
     }
     d3.queue()
     .defer(d3.csv, "./data/deduped-all-concept-data.csv")
-    .defer(d3.csv,"./data/all-level-defn.csv")
+    .defer(d3.csv,"./data/combined-all-level-defn.csv")
     .defer(d3.csv, "./data/relations.csv")  
     .await(ready);
     function ready(error, concept_info, concept_defn, concept_reln){
@@ -518,6 +518,6 @@ search_relations_by_str = function(concept){
             initializeBreadcrumb(rootTerm);
             search_relations_by_cui(cui);
         }
-        else alert("No such string or CUI exists line 607")
+        else alert("No such string or CUI exists!")
     }    
 }
