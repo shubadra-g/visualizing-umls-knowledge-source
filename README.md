@@ -8,5 +8,24 @@ This project visualizes the relationships between different concepts. The baseli
 
 This is my Masters project at UIC. My advisor is Dr. G. Elisabeta Marai from the Department of Computer Science. 
 
+### Snapshots of the Visual Browser
+
+![Landing Page](https://github.com/shubadra-g/visualizing-umls-knowledge-source/blob/master/visual-browser-pictures/visual-browser-landing-page.png)
+
+
+![Example Search Term 1](https://github.com/shubadra-g/visualizing-umls-knowledge-source/blob/master/visual-browser-pictures/visual-browser-example-term-1.png)
+
+
+![Details on Demand](https://github.com/shubadra-g/visualizing-umls-knowledge-source/blob/master/visual-browser-pictures/visual-browser-details-on-demand.png)
+
+
+![Example Search Term 2](https://github.com/shubadra-g/visualizing-umls-knowledge-source/blob/master/visual-browser-pictures/visual-browser-example-term-2.png)
+
+
+![Explore Related Concepts](https://github.com/shubadra-g/visualizing-umls-knowledge-source/blob/master/visual-browser-pictures/visual-browser-exploration-term-2.png)
+
+
+
+
 
 
